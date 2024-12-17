@@ -1,0 +1,1 @@
+DROP tb_amole_member;

@@ -1,0 +1,67 @@
+Here's a comprehensive .gitignore for a Go project that includes hiding the .github directory:
+Copy# IDE configurations
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Go build and test files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+# Build output
+bin/
+dist/
+build/
+
+# Go workspace files
+go.work
+go.work.sum
+
+# Go debugging files
+debug/
+
+# Test cache
+*.test
+*.tmp
+testdata/
+
+# Local binary directory
+bin/
+
+# Dependency directories
+vendor/
+
+# Environment variables
+.env
+*.env
+.env.*
+
+# GitHub Actions directory
+.github/
+
+# Go coverage files
+coverage.txt
+coverage.html
+*.cover
+
+# Project-specific binary files
+main
+myapp
+app
+
+# macOS
+.DS_Store
+
+# Log files
+*.log
+logs/
+
+# Air live reload
+tmp/

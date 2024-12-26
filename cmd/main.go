@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/labstack/echo/v4"
 	"github.com/timothypattikawa/ms-kamoro-costumer/api"
 	"github.com/timothypattikawa/ms-kamoro-costumer/internal/config"
@@ -8,7 +10,6 @@ import (
 	"github.com/timothypattikawa/ms-kamoro-costumer/internal/repository"
 	"github.com/timothypattikawa/ms-kamoro-costumer/internal/service"
 	"github.com/timothypattikawa/ms-kamoro-costumer/pkg/utils"
-	"os"
 )
 
 func main() {
@@ -24,7 +25,7 @@ func main() {
 		RefreshTTL:   v.GetDuration("security.jwt.refresh-time"),
 	}
 
-	pgx := newConfig.DbPostgres.GetConnectionPgx()
+	pgx := newConfig.DbPostgres.GetConnectionPgx(getenv)
 	memberRepository := repository.NewMemberRepository(pgx)
 	memberService := service.NewMemberService(v, pgx, memberRepository, *tokenConfig)
 	memberHandler := handler.NewMemberHandler(memberService)

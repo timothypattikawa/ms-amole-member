@@ -42,3 +42,5 @@ Thumbs.db
 
 # Ignore GitHub-related files and directories
 .github/
+application-staging.yml
+application-production.yml

@@ -4,8 +4,8 @@ service:
 db:
   postgres:
     user: "root"
-    password: "secret"
-    host: "postgres-amole"
+    password: "bRSvlQ6WXYKnIijwIPnp"
+    host: "amole-database.c9kw2g80qxj7.ap-southeast-2.rds.amazonaws.com"
     port: 5432
     schema: "amole_db"
     min-conn: 10

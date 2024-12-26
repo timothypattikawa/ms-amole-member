@@ -3,11 +3,13 @@ package config
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/spf13/viper"
 	"log"
 	"net/url"
+	"os"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/spf13/viper"
 )
 
 type DatabaseConnectPool struct {
@@ -27,7 +29,7 @@ type DatabaseConnection struct {
 }
 
 // postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable
-func (dc *DatabaseConnection) getConnectionUrlSource() string {
+func (dc *DatabaseConnection) getConnectionUrlSource(env string) string {
 	u := url.URL{
 		Scheme: "postgres",
 		Host:   fmt.Sprintf("%s:%d", dc.host, dc.port),
@@ -35,15 +37,17 @@ func (dc *DatabaseConnection) getConnectionUrlSource() string {
 		Path:   dc.dbname,
 	}
 
-	values := url.Values{}
-	values.Add("sslmode", "disable")
+	if env == "development" {
+		values := url.Values{}
+		values.Add("sslmode", "disable")
+		u.RawQuery = values.Encode()
+	}
 
-	u.RawQuery = values.Encode()
 	return u.String()
 }
 
-func (dc *DatabaseConnection) GetConnectionPgx() *pgxpool.Pool {
-	source := dc.getConnectionUrlSource()
+func (dc *DatabaseConnection) GetConnectionPgx(env string) *pgxpool.Pool {
+	source := dc.getConnectionUrlSource(env)
 	log.Printf("Url Database: %s", source)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -63,6 +67,19 @@ func (dc *DatabaseConnection) GetConnectionPgx() *pgxpool.Pool {
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
 	}
+
+	rows, err := poolWithConfig.Query(ctx, "select 1")
+	if err != nil {
+		log.Printf("error initial db validation query error=%s, db=%s", err, dc.dbname)
+		os.Exit(1)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Printf("error initial db validation query error=%s db=%s", err, dc.dbname)
+		os.Exit(1)
+	}
+
+	log.Println("successfully connected to db -", dc.dbname)
 
 	return poolWithConfig
 }

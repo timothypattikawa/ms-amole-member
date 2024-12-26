@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"log"
+	"net/http"
+	"strconv"
+
 	"github.com/labstack/echo/v4"
 	"github.com/timothypattikawa/ms-kamoro-costumer/internal/dto"
 	"github.com/timothypattikawa/ms-kamoro-costumer/internal/service"
 	"github.com/timothypattikawa/ms-kamoro-costumer/pkg/exception"
-	"log"
-	"net/http"
-	"strconv"
 )
 
 type MemberHandler struct {

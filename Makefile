@@ -14,5 +14,7 @@ migrateup:
 	migrate -path script/migrations -database "postgresql://root:secret@localhost:5432/amole_db?sslmode=disable" -verbose up
 migratedown:
 	migrate -path script/migrations -database "postgresql://root:secret@localhost:5432/amole_db?sslmode=disable" -verbose down
+migrateup-aws:
+	migrate -path script/migrations -database "postgresql://root:bRSvlQ6WXYKnIijwIPnp@amole-database.c9kw2g80qxj7.ap-southeast-2.rds.amazonaws.com:5432/amole_db" -verbose up
 
 .PHONY: postgres17 createdb dropdb migrateup migratedown

@@ -1,1 +1,1 @@
-DROP tb_amole_member;
+DROP TABLE tb_amole_member;

@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/spf13/viper"
 	"github.com/timothypattikawa/ms-kamoro-costumer/internal/dto"
@@ -10,7 +12,6 @@ import (
 	sqlc "github.com/timothypattikawa/ms-kamoro-costumer/internal/repository/postgres"
 	"github.com/timothypattikawa/ms-kamoro-costumer/pkg/exception"
 	"github.com/timothypattikawa/ms-kamoro-costumer/pkg/utils"
-	"log"
 )
 
 type MemberService interface {
@@ -49,7 +50,9 @@ func (m MemberServiceImpl) GetMemberInfo(ctx context.Context, id int64) (dto.Mem
 }
 
 func (m MemberServiceImpl) RegistrationMember(ctx context.Context, req dto.RegistrationRequest) error {
+	log.Printf("Request to registartion with data {%v}", req)
 	err := m.mr.ExecTx(ctx, func(q *sqlc.Queries) error {
+		log.Printf("Try to find member{%v}", req)
 		_, err := q.GetMemberByEmail(ctx, req.Email)
 		if err == nil {
 			return exception.NewBadReqeustError("member email already exists")
@@ -70,10 +73,12 @@ func (m MemberServiceImpl) RegistrationMember(ctx context.Context, req dto.Regis
 			log.Println(err)
 			return err
 		}
+		log.Printf("Success to insert data for regis member{%v}", req)
 
 		return nil
 	})
 
+	log.Printf("Success to regis member{%v}", req)
 	return err
 }
 
@@ -88,7 +93,7 @@ func (m MemberServiceImpl) LoginMember(ctx context.Context, req dto.LoginRequest
 		}
 
 		password := utils.ValidatePassword(member.Password, req.Password)
-		if password == false {
+		if !password {
 			return exception.NewBadReqeustError("failed to login member, password not match")
 		}
 
